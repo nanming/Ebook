@@ -21,3 +21,7 @@ typedef struct FontOpr {
 	int (*GetCodeBitMap)();
 	struct FontOpr *next;
 }T_FontOpr, *PT_FontOpr;
+
+int RegisterFontOpr(PT_FontOpr ptFontOpr);
+
+
