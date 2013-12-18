@@ -91,7 +91,7 @@ int main (int argc, char **argv)
 		printf("Set Text Detail failed !\n");
 		return -1;
 	}
-	iError = SelectDisplayDevice(display);
+	iError = SelectAndInitDisplayDevice(display);
 	if (iError < 0)
 	{
 		printf("Select Display Device failed!\n");

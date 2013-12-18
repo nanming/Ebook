@@ -51,3 +51,26 @@ int RegisterDispOpr(PT_DispOpr DispOpr)
 
 	return 0
 }
+
+int SelectAndInitDisplayDevice(unsigned char *name)
+{
+	PT_DispOpr ptmp = T_DispOprSupportHead;
+
+	while (ptmp)
+	{
+		if (strcmp(ptmp->name, name) == 0)
+		{
+			rerurn(ptmp->DeviceInit());
+		}
+		else
+		{
+			ptmp = ptmp->next;
+		}
+	}
+
+	return -1;
+}
+
+
+
+

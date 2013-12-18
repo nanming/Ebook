@@ -31,3 +31,4 @@ typedef struct DispOpr{
 	struct DispOpr *next;
 } T_DispOpr, *PT_DispOpr;
 
+int SelectAndInitDisplayDevice(unsigned char *name);
