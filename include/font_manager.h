@@ -17,11 +17,10 @@ typedef struct FontBitMap {
 
 typedef struct FontOpr {
 	char *name;
-	int (*FontInit)();
-	int (*GetCodeBitMap)();
+	int (*FontInit)(char *fontfile, unsigned int dwfontsize);
+	int (*GetCodeBitMap)(unsigned int dwcode, PT_FontBitMap ptFontBitMap);
 	struct FontOpr *next;
 }T_FontOpr, *PT_FontOpr;
 
 int RegisterFontOpr(PT_FontOpr ptFontOpr);
-
-
+PT_FontOpr getFontOpr(char *name);
