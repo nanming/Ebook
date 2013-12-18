@@ -43,7 +43,7 @@ static int Utf16beGetCodeFrmBuf(unsigned char *buffstart, unsigned char *buffend
 	}
 }
 
-int Utf16beEncodInit(void)
+int Utf16beEncodingInit(void)
 {
 	AddFontOprForEncoding(&Utf16beEncodingOpr, getFontOpr("ascii");
 	AddFontOprForEncoding(&Utf16beEncodingOpr, getFontOpr("gbk");

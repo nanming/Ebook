@@ -42,6 +42,33 @@ PT_FontOpr getFontOpr(char *name)
 	return NULL;
 }
 
+int FontInit(void)
+{
+	int iError;
+
+	iError = AsciiFontInit();
+	if (iError < )
+	{
+		printf("Ascii Font Init failed \n");
+		return -1;
+	}
+
+	iError = FreetypeInit();
+	if (iError < )
+	{
+		printf("Freetype Font Init failed \n");
+		return -1;
+	}
+
+	iError = GbkFontInit();
+	if (iError < )
+	{
+		printf("Gbk Font Init failed \n");
+		return -1;
+	}
+
+	return 0;
+}
 
 
 

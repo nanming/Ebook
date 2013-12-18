@@ -62,7 +62,7 @@ static int AsciiGetCodeFrmBuf(unsigned char *buffstart, unsigned char *buffend, 
 }
 
 
-int AsciiEncodInit(void)
+int AsciiEncodingInit(void)
 {
 	AddFontOprForEncoding(&AsciiEncodingOpr, getFontOpr("freetype"));
 	AddFontOprForEncoding(&AsciiEncodingOpr, getFontOpr("ascii"));

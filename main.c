@@ -79,19 +79,19 @@ int main (int argc, char **argv)
 		printf("EncodingInit error..\n");
 		return -1;
 	}
-	iError = OpenTextFile();
+	iError = OpenTextFile(text_files);
 	if (iError < 0)
 	{
 		printf("Open file failed !\n");
 		return -1;
 	}
-	iError = SetTextDetail();
+	iError = SetTextDetail(font_file, hzk_file, size);
 	if (iError < 0)
 	{
 		printf("Set Text Detail failed !\n");
 		return -1;
 	}
-	iError = SelectDisplayDevice();
+	iError = SelectDisplayDevice(display);
 	if (iError < 0)
 	{
 		printf("Select Display Device failed!\n");
