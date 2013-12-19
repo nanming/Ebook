@@ -42,6 +42,19 @@ PT_FontOpr getFontOpr(char *name)
 	return NULL;
 }
 
+void showsupportfont(void)
+{
+	PT_FontOpr ptmp = ptFontOprSupportedHead;
+	int i = 0;
+	printf("Supported font: \n");
+
+	while (ptmp)
+	{
+		printf("%d: %s\n", i++, ptmp->name);
+		ptmp = ptmp->next;
+	}
+}
+
 int FontInit(void)
 {
 	int iError;

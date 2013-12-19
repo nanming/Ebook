@@ -23,5 +23,6 @@ typedef struct FontOpr {
 }T_FontOpr, *PT_FontOpr;
 
 int RegisterFontOpr(PT_FontOpr ptFontOpr);
-PT_FontOpr getFontOpr(char *name);
 int Font_Init(void);
+void showsupportfont(void);
+PT_FontOpr getFontOpr(char *name);

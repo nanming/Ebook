@@ -28,6 +28,7 @@ int main (int argc, char **argv)
 	char acFreetypeFile[128];
 	char acHzkFile[128];
 	char acDisplayDevice[128];
+	char acTextFile[128];
 	char Opr;
 
 	while ((iError = getopt(argc, argv, "ls:f:h:d:")) != -1)
@@ -60,6 +61,16 @@ int main (int argc, char **argv)
 		}		
 	}
 
+	if (!blist && (optind >=argc))
+	{
+		printf("Usage: %s [-s size] [-f font_file] [-h hzk_file] [-d display] <text_files> \n", argv[0]);	
+		printf("Usage: %s -l\n", argv[0]);
+		return -1;
+	}
+
+	strncpy(acTextFile, argv[optind], 128);
+	acTextFile[127] = '\0';
+
 	iError = DisplayInit();
 	if (iError < 0)
 	{
@@ -79,19 +90,19 @@ int main (int argc, char **argv)
 		printf("EncodingInit error..\n");
 		return -1;
 	}
-	iError = OpenTextFile(text_files);
+	iError = OpenTextFile(acTextFile);
 	if (iError < 0)
 	{
 		printf("Open file failed !\n");
 		return -1;
 	}
-	iError = SetTextDetail(font_file, hzk_file, size);
+	iError = SetTextDetail(acFreetypeFile, acHzkFile, dwFontsize);
 	if (iError < 0)
 	{
 		printf("Set Text Detail failed !\n");
 		return -1;
 	}
-	iError = SelectAndInitDisplayDevice(display);
+	iError = SelectAndInitDisplayDevice(acDisplayDevice);
 	if (iError < 0)
 	{
 		printf("Select Display Device failed!\n");

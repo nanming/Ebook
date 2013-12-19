@@ -90,6 +90,18 @@ int RegisterEncodingOpr(PT_EncodingOpr ptEncodingOpr)
 
 }
 
+void showsupportendcoding(void)
+{
+	PT_EncodingOpr ptmp = PT_EncodingOprSuppotedHead;
+	int i = 0;
+
+	while (ptmp)
+	{
+		printf("%d: %s\n", i++, ptmp->name);
+		ptmp = ptmp->next;
+	}
+}
+
 int EncodingInit(void)
 {
 	int iError;
