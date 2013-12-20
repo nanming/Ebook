@@ -15,8 +15,8 @@ typedef struct PT_PageDesc {
 	int num;
 	unsigned char *LcdFirstPosAtFile;
 	unsigned char *LcdNextFirstPosAtFile;
-	struct PT_PageDesc *next;
-	struct PT_PageDesc *pre;
+	struct PT_PageDesc *nextPage;
+	struct PT_PageDesc *prePage;
 }T_PageDesc, *PT_PageDesc;
 
 static struct stat bstat;
@@ -28,7 +28,8 @@ static unsigned int dwFontSize;
 
 static PT_DispOpr g_ptDispOpr;
 static PT_EncodingOpr fileEncodingOpr;
-static PT_PageDesc PT_CurPage;
+static PT_PageDesc PT_CurPage = NULL;
+static PT_PageDesc PageRecordHead   = NULL;
 
 int OpenTextFile(char *Textfilename)
 {
@@ -185,9 +186,60 @@ int ReloateFontPos(PT_FontBitMap ptFontBitMap)
 	return 0;
 }
 
-int showonefont(PT_FontBitMap ptFontBitMap)
+static int showonefont(PT_FontBitMap ptFontBitMap)
 {
+	int x, y;	
+	int i = 0;
+	unsigned char ucbyte;
+	int bit;
 
+	if (ptFontBitMap.iBpp == 1)
+	{
+		for (y = ptFontBitMap->iYTop; y < ptFontBitMap->iYMax; y++)
+		{
+			i = (y - ptFontBitMap->iYTop) * ptFontBitMap->iPitch;
+			for (x = ptFontBitMap->iXLeft, bit = 7; x < ptFontBitMap->iXMax; x++)
+			{
+				if (bit == 7)
+				{
+					ucbyte = ptFontBitMap->pucBuffer[i++];
+				}
+				if (ucbyte & (1 << bit))
+				{
+					g_ptDispOpr->ShowPixel(x, y, 1);
+				}
+				else
+				{
+					g_ptDispOpr->ShowPixel(x, y, 0);
+				}
+				bit--;
+				if (bit == -1)
+				{
+					bit = 7;
+				}
+
+			}
+		}
+	}	
+	else if (ptFontBitMap.iBpp == 8)
+	{
+		for (y = ptFontBitMap->iYTop; y < ptFontBitMap->iYMax; y++)
+		{
+			for (x = ptFontBitMap->iXLeft, x < ptFontBitMap->iXMax; x++)
+			{
+				if (ptFontBitMap->pucBuffer)
+				{
+					g_ptDispOpr->ShowPixel(x, y, 1);
+				}	
+			}
+		}
+
+	}
+	else
+	{
+		printf("Do not suppore this type\n");
+		return -1;
+	}
 }
 
 static int showonepage(unsigned char *buffstart)
@@ -280,11 +332,32 @@ static int showonepage(unsigned char *buffstart)
 	return 0;
 }
 
+static void RecordPage(PT_PageDesc ptPageNew)
+{
+	PT_PageDesc ptpage;
+
+	if (!PageRecordHead)
+	{
+		PageRecordHead = ptPageNew;
+	}
+	else
+	{
+		ptpage = PageRecordHead;
+		while (ptpage->nextPage)
+		{
+			ptpage = ptpage->nextPage;
+		}
+		ptpage->nextPage = ptPageNew;
+		ptPageNew->prePage = ptPageNew;
+	}
+}
+
 int shownextpage()
 {
 	PT_PageDesc ptPage;
 	unsigned int *dwcode;
 	int len;
+	int iError;
 
 	if (PT_CurPage)
 	{
@@ -294,20 +367,52 @@ int shownextpage()
 	{
 		textcurrentposatfile = TextFirstPosAtFile;
 	}
-	showonepage(textcurrentposatfile);	
+	iError = showonepage(textcurrentposatfile);	
+	if (iError == 0)
+	{
+		if ( PT_CurPage && PT_CurPage->nextPage)
+		{
+			PT_CurPage = PT_CurPage->nextPage;
+			return 0;
+		}
+		ptPage = malloc(sizeof(T_PageDesc));
+		if (ptPage)
+		{
+			ptPage->LcdFirstPosAtFile 	= textcurrentposatfile;
+			ptPage->LcdNextFirstPosAtFile 	= TextFirstPosAtFile;
+			ptPage->nextPage		= NULL;
+			ptPage->prePage			= NULL;
 
-	ptPage->LcdFirstPosAtFile 	= textcurrentposatfile;
-	ptPage->LcdNextFirstPosAtFile 	= TextFirstPosAtFile;
-	ptPage->next			= NULL;
-	ptPage->pre			= NULL;
-
-	PT_CurPage = ptPage;
-	RecordPage(ptPage);
-
-	return 0;
+			PT_CurPage = ptPage;
+			RecordPage(ptPage);
+			return 0;
+		}	
+		else
+		{
+			return -1;
+		}
+	}
+	return iError;
 }
 
-
+int showprepage()
+{
+	int iError;
+	
+	if (PT_CurPage && PT_CurPage->prePage)
+	{
+		iError = showonepage(PT_CurPage->prePage->LcdFirstPosAtFile);
+		if (iError == 0)
+		{
+			PT_CurPage = PT_CurPage->prePage;
+		}
+	}
+	else
+	{
+		return -1;
+	}
+	return iError;
+}
 
 
 
